@@ -7,7 +7,10 @@
 <div class="container py-5 text-center">
     <h1 class="mb-5">PROJECT OVERVIEW</h1>
     <div class="card bg-dark text-light p-5 mb-5">
-        <h3 class="mb-3">{{ ucfirst($project->name) }}</h3>
+        <div class="project-title d-flex align-items-center justify-content-center mb-3">
+            <h3>{{ ucfirst($project->name) }}</h3>
+            @if($project->type) <span class="badge rounded-pill p-2 ms-3" style="background-color: {{ $project->type->color }}">{{ $project->type->label }}</span>@endif
+        </div>
         <div class="card-top clearfix text-start mb-5">
             <img class="float-start d-block me-3 img-fluid" src="{{ $project->getImageUrl() }}" alt="{{ $project->name }}">
             <p>{{ $project->description }}</p>
