@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use App\Models\Type;
 
 class ProjectController extends Controller
 {
@@ -39,9 +40,10 @@ class ProjectController extends Controller
      */
     public function create()
     {
+        $types = Type::orderBy('id')->get();
         $project = new Project();
 
-        return view('admin.projects.create', compact('project'));
+        return view('admin.projects.create', compact('project', 'types'));
     }
 
     /**
@@ -54,10 +56,13 @@ class ProjectController extends Controller
             'name' => 'required|string|unique:projects',
             'description' => 'required|string',
             'project_url' => 'required|url',
-            'image_url' => 'image|nullable|mimes:jpg,jpeg,bmp,png'
+            'image_url' => 'image|nullable|mimes:jpg,jpeg,bmp,png',
+            'type_id' => 'nullable|exists:types,id'
         ]);
 
         $data = $request->all();
+
+
 
 
         if (array_key_exists('image_url', $data)) {
@@ -88,8 +93,9 @@ class ProjectController extends Controller
      */
     public function edit(int $id)
     {
+        $types = Type::orderBy('id')->get();
         $project = Project::withTrashed()->findOrFail($id);
-        return view('admin.projects.edit', compact('project'));
+        return view('admin.projects.edit', compact('project', 'types'));
     }
 
     /**
@@ -101,7 +107,8 @@ class ProjectController extends Controller
             'name' => ['required', 'string', Rule::unique('projects')->ignore($project->id)],
             'description' => 'required|string',
             'project_url' => 'required|url',
-            'image_url' => 'image|nullable|mimes:jpg,jpeg,bmp,png'
+            'image_url' => 'image|nullable|mimes:jpg,jpeg,bmp,png',
+            'type_id' => 'nullable|exists:types,id'
         ]);
 
         $data = $request->all();

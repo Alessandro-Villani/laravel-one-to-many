@@ -12,7 +12,7 @@ class Project extends Model
 
     use SoftDeletes;
 
-    protected $fillable = ['name', 'description', 'project_url', 'image_url'];
+    protected $fillable = ['name', 'description', 'project_url', 'image_url', 'type_id'];
 
     public function getImageUrl()
     {
