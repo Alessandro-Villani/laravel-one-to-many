@@ -36,6 +36,7 @@
                         <input class="edited-color" type="hidden" name="color">
                         <button class="btn btn-edit btn-success" ><i class="fa-solid fa-check"></i></button>
                     </form>
+                    <button class="btn btn-close-edit btn-secondary d-none"><i class="fa-solid fa-xmark"></i></button>
                     <form class="d-inline delete-form" action="{{ route('admin.types.destroy', $type->id) }}" method="POST" data-project-name="{{ $type->label }}">
                         @method('DELETE')
                         @csrf
@@ -59,9 +60,9 @@
                         @csrf
                         <input type="hidden" name="label" id="label">
                         <input type="hidden" name="color" id="color">
-                        <button class="btn btn-small btn-success me-2" href="#"><i class="fa-solid fa-check"></i></button>
+                        <button class="btn btn-small btn-success me-2"><i class="fa-solid fa-check"></i></button>
                     </form>
-                    <button id="close-add-row" class="btn btn-small btn-danger" href="#"><i class="fa-solid fa-xmark"></i></button>
+                    <button id="close-add-row" class="btn btn-small btn-danger"><i class="fa-solid fa-xmark"></i></button>
                 </td>
             </tr>       
         </tbody>
@@ -125,18 +126,29 @@
                 const editForm = document.querySelector(`#type-${id}-row .edit-form`);
                 const labelSender = document.querySelector(`#type-${id}-row .edited-label`);
                 const colorSender = document.querySelector(`#type-${id}-row .edited-color`);
+                const closeEdit = document.querySelector(`#type-${id}-row .btn-close-edit`);
                 labelHolder.classList.add('d-none');
                 labelEditorRow.classList.remove('d-none');
                 colorHolder.disabled = false;
                 button.classList.add('d-none');
                 editForm.classList.remove('d-none');
                 editForm.classList.add('d-inline');
+                closeEdit.classList.remove('d-none');
                 editForm.addEventListener('submit', e => {
                     e.preventDefault();
                     console.log(labelEditor.value);
                     labelSender.value = labelEditor.value;
                     colorSender.value = colorHolder.value;
                     editForm.submit();
+                });
+                closeEdit.addEventListener('click', () => {
+                    labelHolder.classList.remove('d-none');
+                    labelEditorRow.classList.add('d-none');
+                    colorHolder.disabled = true;
+                    button.classList.remove('d-none');
+                    editForm.classList.add('d-none');
+                    editForm.classList.remove('d-inline');
+                    closeEdit.classList.add('d-none');
                 })
             })
         })
