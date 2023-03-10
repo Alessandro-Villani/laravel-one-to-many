@@ -20,14 +20,22 @@
         </thead>
         <tbody id="types-table">
             @forelse ($types as $type)
-            <tr>
+            <tr id="type-{{$type->id}}-row">
                 <th class="align-middle" scope="row">{{ $type->id }}</th>
-                <td class="align-middle">{{ $type->label }}</td>
-                <td class="align-middle"><input type="color" value="{{ $type->color }}" disabled></td>
+                <td class="label align-middle">{{ $type->label }}</td>
+                <td class="label-edit align-middle d-none"><input type="text" value="{{ $type->label }}"></td>
+                <td class="align-middle"><input class="color" type="color" name="color" value="{{ $type->color }}" disabled></td>
                 <td class="align-middle">{{ $type->created_at }}</td>
                 <td class="align-middle">{{ $type->updated_at }}</td>
-                <td class="align-middle"> 
-                    <a class="btn btn-small btn-warning" href="{{ route('admin.types.edit', $type->id) }}"><i class="fa-regular fa-pen-to-square"></i></a>
+                <td class="align-middle">
+                    <button class="btn btn-edit btn-warning" data-id="{{ $type->id }}"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <form class="d-none edit-form" action="{{ route('admin.types.update', $type->id) }}" method="POST">
+                        @method('PUT')
+                        @csrf
+                        <input class="edited-label" type="hidden" name="label">
+                        <input class="edited-color" type="hidden" name="color">
+                        <button class="btn btn-edit btn-success" ><i class="fa-solid fa-check"></i></button>
+                    </form>
                     <form class="d-inline delete-form" action="{{ route('admin.types.destroy', $type->id) }}" method="POST" data-project-name="{{ $type->label }}">
                         @method('DELETE')
                         @csrf
@@ -100,7 +108,39 @@
             addTypeRow.classList.add('d-none');
             addButton.disabled = false;
         });
+
+    </script>
+
+    <script>
+        //EDIT TYPE SCRIPT
         
+        const editButtons = document.querySelectorAll('.btn-edit');
+        editButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.dataset.id;
+                const labelHolder = document.querySelector(`#type-${id}-row .label`);
+                const labelEditorRow = document.querySelector(`#type-${id}-row .label-edit`);
+                const labelEditor = document.querySelector(`#type-${id}-row .label-edit input`);
+                const colorHolder = document.querySelector(`#type-${id}-row .color`);
+                const editForm = document.querySelector(`#type-${id}-row .edit-form`);
+                const labelSender = document.querySelector(`#type-${id}-row .edited-label`);
+                const colorSender = document.querySelector(`#type-${id}-row .edited-color`);
+                labelHolder.classList.add('d-none');
+                labelEditorRow.classList.remove('d-none');
+                colorHolder.disabled = false;
+                button.classList.add('d-none');
+                editForm.classList.remove('d-none');
+                editForm.classList.add('d-inline');
+                editForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    console.log(labelEditor.value);
+                    labelSender.value = labelEditor.value;
+                    colorSender.value = colorHolder.value;
+                    editForm.submit();
+                })
+            })
+        })
+
     </script>
 @endsection
 

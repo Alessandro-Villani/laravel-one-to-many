@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TypeController extends Controller
 {
@@ -58,15 +59,25 @@ class TypeController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return to_route('admin.types.index');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Type $type)
     {
-        //
+        $request->validate([
+            'label' => ['required', 'string', Rule::unique('types')->ignore($type->id)],
+            'color' => 'nullable|size:7'
+        ]);
+
+        $data = $request->all();
+
+        $type->fill($data);
+        $type->save();
+
+        return to_route('admin.types.index')->with('message', "il tipo <strong>" . strtoupper($type->label) . "</strong> è stato modificato con successo")->with('type', 'success');
     }
 
     /**
