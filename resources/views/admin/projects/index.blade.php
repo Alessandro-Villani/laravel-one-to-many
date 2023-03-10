@@ -32,7 +32,7 @@
             <tr>
                 <th class="align-middle" scope="row">{{ $project->id }}</th>
                 <td class="align-middle">{{ $project->name }}</td>
-                <td class="align-middle">{{ $project->type ? $project->type->label : '-' }}</td>
+                <td class="align-middle"><span class="@if($project->type)badge rounded-pill p-2 @endif" style="background-color: {{ $project->type?->color }}">{{ $project->type ? $project->type->label : '-' }}</span></td>
                 <td class="align-middle">
                     <form class="mb-0 text-center" action="{{ route('admin.projects.toggle-status', $project->id) }}" method="POST">
                         @method('PATCH')
