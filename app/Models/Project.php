@@ -25,4 +25,9 @@ class Project extends Model
         if (substr($this->image_url, 0, 8) === 'projects') return true;
         return false;
     }
+
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
+    }
 }
