@@ -6,6 +6,7 @@
 
 <div class="container py-5 text-center">
     <h1>Types</h1>
+    @include('includes.alerts.errors')
     <table class="table table-striped">
         <thead>
           <tr>
@@ -17,7 +18,7 @@
             <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="types-table">
             @forelse ($types as $type)
             <tr>
                 <th class="align-middle" scope="row">{{ $type->id }}</th>
@@ -33,18 +34,33 @@
                         <button class="btn btn-small btn-danger"><i class="fa-regular fa-trash-can"></i></button>
                     </form>
                 </td>
-            </tr> 
+            </tr>
             @empty
             <tr>
-                <th scope="row" colspan="5" class="text-center">Non ci sono tipi</th>
+                <th scope="row" colspan="6" class="text-center">Non ci sono tipi</th>
             </tr> 
-            @endforelse
-          
+            @endforelse  
+            <tr id="add-type-row" class="d-none">   
+                <th class="align-middle" scope="row"></th>
+                <td class="align-middle"><input id="label-holder" type="text"></td>
+                <td class="align-middle"><input id="color-holder" type="color"></td>
+                <td class="align-middle"></td>
+                <td class="align-middle"></td>
+                <td class="align-middle d-flex justify-content-center align-items-center"> 
+                    <form id="submit-add-form" action="{{route('admin.types.store')}}" method="POST">
+                        @csrf
+                        <input type="hidden" name="label" id="label">
+                        <input type="hidden" name="color" id="color">
+                        <button class="btn btn-small btn-success me-2" href="#"><i class="fa-solid fa-check"></i></button>
+                    </form>
+                    <button id="close-add-row" class="btn btn-small btn-danger" href="#"><i class="fa-solid fa-xmark"></i></button>
+                </td>
+            </tr>       
         </tbody>
     </table>
 
     <div class="buttons d-flex justify-content-end mb-5">
-        <a href="{{ route('admin.types.create') }}" class="btn btn-small btn-success"><i class="fa-solid fa-plus"></i></a>
+        <button id="add-type" class="btn btn-small btn-success"><i class="fa-solid fa-plus"></i></button>
     </div>
 
     <div class="offset-9 col-3" >{{ $types->links() }}</div>
@@ -54,3 +70,38 @@
 </div>
     
 @endsection
+
+@section('scripts')
+    <script>
+        //ADD TYPE SCRIPT
+
+        const addTypeRow = document.getElementById('add-type-row')
+        const addButton = document.getElementById('add-type');
+        const submitAddForm = document.getElementById('submit-add-form');
+        const closeAddRow = document.getElementById('close-add-row');
+
+        addButton.addEventListener('click', () => {
+            addTypeRow.classList.remove('d-none');
+            addButton.disabled = true;
+        });
+
+        submitAddForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const label = document.getElementById('label-holder').value;
+            const color = document.getElementById('color-holder').value;
+            console.log(label);
+            console.log(color);
+            document.getElementById('label').value = label;
+            document.getElementById('color').value = color;
+            submitAddForm.submit();
+        });
+
+        closeAddRow.addEventListener('click', () => {
+            addTypeRow.classList.add('d-none');
+            addButton.disabled = false;
+        });
+        
+    </script>
+@endsection
+
+

@@ -22,7 +22,7 @@ class TypeController extends Controller
      */
     public function create()
     {
-        //
+        return to_route('admin.types.index');
     }
 
     /**
@@ -30,7 +30,19 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $request->validate([
+            'label' => 'required|string|unique:types',
+            'color' => 'nullable|size:7'
+        ]);
+
+        $data = $request->all();
+
+        $new_type = new Type();
+        $new_type->fill($data);
+        $new_type->save();
+
+        return to_route('admin.types.index')->with('message', "il tipo <strong>" . strtoupper($new_type->label) . "</strong> è stato aggiunto con successo")->with('type', 'success');
     }
 
     /**
@@ -60,8 +72,10 @@ class TypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Type $type)
     {
-        //
+        $type->delete();
+
+        return to_route('admin.types.index')->with('message', "il tipo <strong>" . strtoupper($type->label) . "</strong> è stato rimosso con successo")->with('type', 'success');
     }
 }
